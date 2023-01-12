@@ -133,12 +133,25 @@ class Report:
     Class to compile the data from the CattleWeights and CattleFeed classes 
     and create the usable report to be added to the report SHEET
     """
-def remaining_time():
+    def remaining_time():
         """
         Function to get an estimate of the time remaining before cattle reach their target weight of 750kg
         """
         #target = (750 - average weight) / average_daily_gain
 
+
+    def feed_to_target():
+        """
+        Function to calculate the amount of food required to get the average animal to target weight
+        """
+        #feed_required = target * Avg FCR
+    
+
+    def cost_to_target():
+        """
+        Function to calculate the cost of getting the animals from their current weights to the target weights of 750kg 
+        based on how much food they still require and the cost of that food.
+        """
 class Main():
     """
     Class to execute the entire aplication. 
