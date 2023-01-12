@@ -29,6 +29,40 @@ class CattleWeights:
     data from the weight SHEET
     """
 
+    def total_monthly_weight():
+        """
+        Function to calculate the total weight of all the cattle combined for each month
+        """
+        """
+        [Jan: 2456, Feb: 2982...]
+        create a dictionary where the months are the keys and then sum of all cattle is the value.
+        possibly calculate the the total weight for each month first then assign that to the value. Using a for loop?
+        """
+    total_weight = total_monthly_weight()
+
+    def average_weight(total_weight):
+        """
+        Calculate the average weight of an individual animal for each month of the year. 
+        Using the total weight for each month of the year from the total_monthly_weight function and then 
+        dividing it by the number of cattle in this case 20. 
+        """
+        #average weight = total_weight/ len(row[1])
+
+    def average_monthly_gain():
+        """
+        Difference in the average weight gained by the cattle from month to month.
+        Using the average_weight function and calculating the difference in one month from the previous.
+        """
+        #monthly gain = average_weight[december] - average_weight[november] etc
+
+
+    def average_daily_gain():
+        """
+        Function to calculate the average daily weight gain of the average cow in the herd.
+        """
+        #adg = average_weight/(number of days in each month) need to round() answer down to 1 decimal place
+        #adg = [jan: 1,2, feb: 1,4, ... etc]
+
 
 class CattleFeed:
     """
