@@ -69,14 +69,75 @@ class CattleFeed:
     Class to group together all the functions for evaluating the feed data
     from the feed SHEET
     """
+    # create one function that calculates total and then pass used and wasted into it.
+    def total_used_feed():
+        """
+        Function to calculate the total amount of feed used over the year.
+        """
+        #sum(len(feed row))
 
 
+    def total_wasted_feed():
+        """
+        Function to calculate how much food has been wasted over the year. 
+        """
+        #sum(len(waste row))
+
+
+    def total_consumed():
+        """
+        Function for the amount of food actually consumed by the cattle over the year. 
+        """
+        #consumed = total_used_feed() - total_wasted_feed()
+
+
+# possibly use the same one function that calculates totals and just pass it the feed cost. 
+    def feed_cost():
+        """
+        Function for the total cost of all the feed for the year. Assuming an average cost of feed of £150 per ton.
+        """
+        # cost = total_used_feed() * 150
+
+
+    def cost_of_waste():
+        """
+        Function for the total cost of all the wasted food for the year. Assuming the same cost of £150 per ton
+        """
+        #waste = total_wasted_feed() * 150
+
+
+    def individual_consumption():
+        """
+        Function to calculate the average consumption of each individual animal.
+        """
+        #ind_consumption = consumed / len(row1)
+        
+
+    def average_consumption():
+        """
+        Function to calculate the average consumption per month
+        """
+        #avg_consumption = consumed / len(feed column)
+
+
+    def feed_conversion_ratio():
+        """
+        Function to calculate how many kg's of food the average animal ate to put on 1kg of body weight.
+        """
+        #fcr = consumed / ((-1index avg december weight)-(0 index avg january weight))
+
+
+    
 class Report: 
     """
     Class to compile the data from the CattleWeights and CattleFeed classes 
     and create the usable report to be added to the report SHEET
     """
-
+def remaining_time():
+        """
+        Function to get an estimate of the time remaining before cattle reach their target weight of 750kg
+        """
+        #target = (750 - average weight) / average_daily_gain
 
 class Main():
     """
