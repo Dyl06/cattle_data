@@ -10,31 +10,13 @@ def total_monthly_weight():
     Function to calculate the total weight of all the cattle combined for
     each month
     """
-    """
-    [Jan: 2456, Feb: 2982...]
-    create a dictionary where the months are the keys and then sum of all cattle is the value.
-    possibly calculate the the total weight for each month first then assign that to the value. Using a for loop?
-    """
-    #month_total = 0
+    month_total = 0
     for cow,weights in cows.items():
-        jan = weights[1]
-        #print(jan)
-        #month_total += weights[0] 
-       
-        #print(month_total)
-        #weight = {}
+        month_total += weights[0]
+        
+    return month_total
 
 
-       # average = month_total / len(cows)
-       # print(average)
-"""
-jan = 0
-feb = 1
-march = 2
-april = 3
-may =4
-june = 5
-"""
 total_monthly_weight()
 
 
