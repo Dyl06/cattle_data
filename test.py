@@ -3,7 +3,7 @@ cows = {
     "cow2": [11, 22, 33, 44, 55, 66],
     "cow3": [15, 25, 35, 45, 55, 65]
 }
-
+JAN_INDEX = 0
 
 def total_monthly_weight(data, month_index):
     """
@@ -15,27 +15,32 @@ def total_monthly_weight(data, month_index):
         month_total += weights[month_index]
         
     print(month_total)
-    
+    return month_total
 
-JAN_INDEX = 0
-feb_index = 1
-mar_index = 2
-apr_index = 3
-may_index = 4
-june_index = 5
-july_index = 6
-aug_index = 7
-sept_index = 8
-oct_index = 9
-nov_index = 10
-dec_index = 11
+
+total_weight = total_monthly_weight(cows, JAN_INDEX)
+
+
+def average_weight(self, total_weight):
+    """
+    Calculate the average weight of an individual animal for each month
+    of the year.
+    Using the total weight for each month of the year from the
+    total_monthly_weight function and then
+    dividing it by the number of cattle in this case 20.
+    """
+    # average weight = total_weight/ len(row[1]
+    average_weight = total_weight / len(cows)
+    round_average_weight = round(average_weight, 2)
+    print(round_average_weight)
+
+
+average_weight(cows, total_weight)
+
+
+
 
 total_monthly_weight(cows, JAN_INDEX)
-total_monthly_weight(cows, feb_index)
-total_monthly_weight(cows, mar_index)
-total_monthly_weight(cows, apr_index)
-total_monthly_weight(cows, may_index)
-total_monthly_weight(cows, june_index)
 
 feed = {
     'jan': 10,
@@ -44,7 +49,6 @@ feed = {
     'april': 12
 
 }
-
 
 def total_used_feed():
         """
@@ -91,6 +95,5 @@ def individual_consumption(fed, cow):
     """
     ind_consumption = fed / len(cows)
     print(ind_consumption)
-
 
 individual_consumption(fed, cows)

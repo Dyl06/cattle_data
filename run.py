@@ -38,7 +38,6 @@ class CattleWeights:
     Class to group together all the functions for evaluating the cattle weight
     data from the weight SHEET
     """
-
     def total_monthly_weight(self, data, month_index):
 
         """
@@ -51,6 +50,7 @@ class CattleWeights:
 
         print(month_total)
         return month_total
+    total_weight = total_monthly_weight(cows, DEC_INDEX)
 
     def average_weight(self, total_weight):
         """
@@ -60,17 +60,9 @@ class CattleWeights:
         total_monthly_weight function and then
         dividing it by the number of cattle in this case 20.
         """
-        # average weight = total_weight/ len(row[1])
-
-    def average_monthly_gain(self):
-        """
-        Difference in the average weight gained by the cattle from month to
-        month.
-        Using the average_weight function and calculating the difference in
-        one month from the previous.
-        """
-        # monthly gain = average_weight[december]
-        #  - average_weight[november] etc
+        average_weight = total_weight / len(cows)
+        round_average_weight = round(average_weight, 2)
+        print(round_average_weight)
 
     def average_daily_gain(self):
         """
@@ -182,4 +174,3 @@ class Main():
     """
     Class to execute the entire aplication.
     """
-    
