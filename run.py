@@ -14,8 +14,14 @@ SHEET = GSPREAD_CLIENT.open('Cattle_data')
 
 Cattle_data = SHEET.worksheet('Weight')
 data = Cattle_data.get_all_values()
-print(data)
+row_data = data[0]
+print(row_data)
 
+jan_weight = []
+for ind in range(2,3):
+    column = Cattle_data.col_values(ind)
+    jan_weight.sum(column)
+print(jan_weight)
 
 class Inputs:
     """
@@ -31,7 +37,8 @@ class CattleWeights:
 
     def total_monthly_weight():
         """
-        Function to calculate the total weight of all the cattle combined for each month
+        Function to calculate the total weight of all the cattle combined for
+        each month
         """
         """
         [Jan: 2456, Feb: 2982...]
@@ -42,16 +49,20 @@ class CattleWeights:
 
     def average_weight(total_weight):
         """
-        Calculate the average weight of an individual animal for each month of the year. 
-        Using the total weight for each month of the year from the total_monthly_weight function and then 
+        Calculate the average weight of an individual animal for each month
+        of the year. 
+        Using the total weight for each month of the year from the
+        total_monthly_weight function and then 
         dividing it by the number of cattle in this case 20. 
         """
         #average weight = total_weight/ len(row[1])
 
     def average_monthly_gain():
         """
-        Difference in the average weight gained by the cattle from month to month.
-        Using the average_weight function and calculating the difference in one month from the previous.
+        Difference in the average weight gained by the cattle from month to
+        month.
+        Using the average_weight function and calculating the difference in
+        one month from the previous.
         """
         #monthly gain = average_weight[december] - average_weight[november] etc
 
@@ -86,7 +97,8 @@ class CattleFeed:
 
     def total_consumed():
         """
-        Function for the amount of food actually consumed by the cattle over the year. 
+        Function for the amount of food actually consumed by the cattle over
+        the year. 
         """
         #consumed = total_used_feed() - total_wasted_feed()
 
@@ -94,21 +106,24 @@ class CattleFeed:
 # possibly use the same one function that calculates totals and just pass it the feed cost. 
     def feed_cost():
         """
-        Function for the total cost of all the feed for the year. Assuming an average cost of feed of £150 per ton.
+        Function for the total cost of all the feed for the year. Assuming an
+        average cost of feed of £150 per ton.
         """
         # cost = total_used_feed() * 150
 
 
     def cost_of_waste():
         """
-        Function for the total cost of all the wasted food for the year. Assuming the same cost of £150 per ton
+        Function for the total cost of all the wasted food for the year.
+        Assuming the same cost of £150 per ton
         """
         #waste = total_wasted_feed() * 150
 
 
     def individual_consumption():
         """
-        Function to calculate the average consumption of each individual animal.
+        Function to calculate the average consumption of each individual 
+        animal.
         """
         #ind_consumption = consumed / len(row1)
         
@@ -122,9 +137,10 @@ class CattleFeed:
 
     def feed_conversion_ratio():
         """
-        Function to calculate how many kg's of food the average animal ate to put on 1kg of body weight.
+        Function to calculate how many kg's of food the average animal ate to
+        put on 1kg of body weight.
         """
-        #fcr = consumed / ((-1index avg december weight)-(0 index avg january weight))
+        #fcr = yearly consumed / ((-1index avg december weight)-(0 index avg january weight))
 
 
     
@@ -135,23 +151,32 @@ class Report:
     """
     def remaining_time():
         """
-        Function to get an estimate of the time remaining before cattle reach their target weight of 750kg
+        Function to get an estimate of the time remaining before cattle reach
+        their target weight of 750kg
         """
         #target = (750 - average weight) / average_daily_gain
 
 
     def feed_to_target():
         """
-        Function to calculate the amount of food required to get the average animal to target weight
+        Function to calculate the amount of food required to get the average
+        animal to target weight
         """
         #feed_required = target * Avg FCR
     
 
     def cost_to_target():
         """
-        Function to calculate the cost of getting the animals from their current weights to the target weights of 750kg 
+        Function to calculate the cost of getting the animals from their 
+        current weights to the target weights of 750kg 
         based on how much food they still require and the cost of that food.
+        Price of food is based on an industry average of £150 per ton.
+        Price is divided by 1000 to get the price in kg as the feed required
+        is in kg's.
         """
+        #target_cost = feed_required * (150 / 1000) 
+
+
 class Main():
     """
     Class to execute the entire aplication. 
