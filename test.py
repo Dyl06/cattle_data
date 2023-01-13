@@ -5,19 +5,38 @@ cows = {
 }
 
 
-def total_monthly_weight():
+def total_monthly_weight(data, month_index):
     """
     Function to calculate the total weight of all the cattle combined for
     each month
     """
     month_total = 0
     for cow,weights in cows.items():
-        month_total += weights[0]
+        month_total += weights[month_index]
         
-    return month_total
+    print(month_total)  
+    
 
+jan_index = 0
+feb_index = 1
+mar_index = 2
+apr_index = 3
+may_index = 4
+june_index = 5
+july_index = 6
+aug_index = 7
+sept_index = 8
+oct_index = 9
+nov_index = 10
+dec_index = 11
 
-total_monthly_weight()
+total_monthly_weight(cows, jan_index)
+total_monthly_weight(cows, feb_index)
+total_monthly_weight(cows, mar_index)
+total_monthly_weight(cows, apr_index)
+total_monthly_weight(cows, may_index)
+total_monthly_weight(cows, june_index)
+
 
 
 feed = {
