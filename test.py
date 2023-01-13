@@ -1,7 +1,7 @@
 cows = {
-    "cow1": [10,20,30,40,50,60],
-    "cow2": [11,22,33,44,55,66],
-    "cow3": [15,25,35,45,55,65]
+    "cow1": [10, 20, 30, 40, 50, 60],
+    "cow2": [11, 22, 33, 44, 55, 66],
+    "cow3": [15, 25, 35, 45, 55, 65]
 }
 
 
@@ -11,13 +11,13 @@ def total_monthly_weight(data, month_index):
     each month
     """
     month_total = 0
-    for cow,weights in cows.items():
+    for cow, weights in data.items():
         month_total += weights[month_index]
         
-    print(month_total)  
+    print(month_total)
     
 
-jan_index = 0
+JAN_INDEX = 0
 feb_index = 1
 mar_index = 2
 apr_index = 3
@@ -30,14 +30,12 @@ oct_index = 9
 nov_index = 10
 dec_index = 11
 
-total_monthly_weight(cows, jan_index)
+total_monthly_weight(cows, JAN_INDEX)
 total_monthly_weight(cows, feb_index)
 total_monthly_weight(cows, mar_index)
 total_monthly_weight(cows, apr_index)
 total_monthly_weight(cows, may_index)
 total_monthly_weight(cows, june_index)
-
-
 
 feed = {
     'jan': 10,
@@ -46,6 +44,7 @@ feed = {
     'april': 12
 
 }
+
 
 def total_used_feed():
         """
@@ -92,5 +91,6 @@ def individual_consumption(fed, cow):
     """
     ind_consumption = fed / len(cows)
     print(ind_consumption)
+
 
 individual_consumption(fed, cows)
