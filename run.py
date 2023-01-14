@@ -19,6 +19,7 @@ DEC_INDEX = -1
 NOV_INDEX = -2
 DEC_DAYS = 31
 TARGET_WEIGHT = 750
+FEED_COST = 150
 
 class Inputs:
     """
@@ -172,9 +173,9 @@ class Report:
         """
         feed_required = target_days * conversion_ratio
         return feed_required
-    feed_to_target(target_days, conversion_ratio)
-    
-    def cost_to_target(self):
+    feed_to_finish = feed_to_target(target_days, conversion_ratio)
+
+    def cost_to_target(self, feed, cost):
         """
         Function to calculate the cost of getting the animals from their
         current weights to the target weights of 750kg
@@ -183,8 +184,9 @@ class Report:
         Price is divided by 1000 to get the price in kg as the feed required
         is in kg's.
         """
-        # TODO: Extract numbers to variables
-        # target_cost = feed_required * (150 / 1000)
+        target_cost = (feed_to_finish * FEED_COST) / 1000
+        return target_cost
+    finishing_cost = cost_to_target(feed_to_finish, FEED_COST)
 
 
 class Main():
