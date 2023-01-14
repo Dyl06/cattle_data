@@ -15,11 +15,26 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Cattle_data')
 
+cows = {
+    "cow1": [10, 20, 30, 40, 50, 60],
+    "cow2": [11, 22, 33, 44, 55, 66],
+    "cow3": [15, 25, 35, 45, 55, 65]
+}
+
+feed = {
+    'jan': 10,
+    'feb': 11,
+    'nov': 10,
+    'dec': 12
+
+}
+
 DEC_INDEX = -1
 NOV_INDEX = -2
 DEC_DAYS = 31
 TARGET_WEIGHT = 750
 FEED_COST = 150
+
 
 class Inputs:
     """
@@ -40,22 +55,25 @@ class CattleWeights:
     """
     Class to group together all the functions for evaluating the cattle weight
     data from the weight SHEET
-    """
+    """ 
+    def __init__(self, data, month_index):
+        self.data = data
+        self.month_index = month_index
+
     def total_monthly_weight(self, data, month_index):
 
         """
         Function to calculate the total weight of all the cattle combined for
         each month
         """
+        
         month_total = 0
-        for cow, weights in data.items():
+        for cow, weights in cows.items():
             month_total += weights[month_index]
 
         print(month_total)
         return month_total
-    total_dec_weight = total_monthly_weight(cows, DEC_INDEX)
-    total_nov_weight = total_monthly_weight(cows, NOV_INDEX)
-    gained_weight = (total_dec_weight - total_nov_weight)
+
 
     def average_weight(self, total_weight):
         """
@@ -69,17 +87,26 @@ class CattleWeights:
         round_average_weight = round(average_weight, 2)
         print(round_average_weight)
         return round_average_weight
-    avg_weight = average_weight(cows, total_dec_weight)
+    #avg_weight = average_weight(cows, total_dec_weight)
 
     def average_daily_gain(self, gained_weight):
         """
         Function to calculate the average daily weight gain of the average
         cow in the herd.
         """
-        first_adg = (total_dec_weight - total_nov_weight) / DEC_DAYS
+        first_adg = (DEC_TOTAL - NOV_TOTAL) / DEC_DAYS
         adg = round(first_adg, 2)
         return adg
-    average_weight_gain = average_daily_gain(gained_weight)
+   # average_weight_gain = average_daily_gain(gained_weight)
+
+
+dec_weight = CattleWeights(cows, DEC_INDEX)
+DEC_TOTAL = dec_weight.total_monthly_weight(cows, DEC_INDEX)
+nov_weight = CattleWeights(cows, NOV_INDEX)
+NOV_TOTAL = nov_weight.total_monthly_weight(cows, NOV_INDEX)
+#total_dec_weight = cattle_weight.total_monthly_weight(cows, DEC_INDEX)
+#total_nov_weight = cattle_weight.total_monthly_weight(cows, NOV_INDEX)
+gained_weight = (DEC_TOTAL - NOV_TOTAL)
 
 
 class CattleFeed:
@@ -137,7 +164,7 @@ class CattleFeed:
         """
         # avg_consumption = consumed / len(feed column)
     
-    dec_intake = feed['december']#feed intake for month of DEC from feed dict
+    dec_intake = feed['dec']#feed intake for month of DEC from feed dict
     def feed_conversion_ratio(self, weight, intake):
         """
         Function to calculate how many kg's of food the average animal ate to
