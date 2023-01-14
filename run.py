@@ -161,8 +161,9 @@ class CattleFeed:
         """
         # avg_consumption = consumed / len(feed column)
     
-    dec_intake = feed['dec']#feed intake for month of DEC from feed dict
-    def feed_conversion_ratio(self, weight, intake):
+    dec_intake = feed['dec']
+
+    def feed_conversion_ratio(self, dec_intake):
         """
         Function to calculate how many kg's of food the average animal ate to
         put on 1kg of body weight. The function is divided by 1000 to convert
@@ -171,33 +172,39 @@ class CattleFeed:
         month to the next (Nov-Dec) and then dividing that by the amount of
         food eaten over the same period.
         """
-        fcr = round((((gained_weight) / (dec_intake)) / 1000), 4)
+        fcr = round((((DEC_TOTAL - NOV_TOTAL) / (dec_intake)) / 1000), 4)
+        print(fcr)
         return fcr
-    conversion_ratio = feed_conversion_ratio(gained_weight, dec_intake)
+
 
 class Report:
     """
     Class to compile the data from the CattleWeights and CattleFeed classes
     and create the usable report to be added to the report SHEET
     """
+    def __init__(self, target, weight, average):
+        self.target = target
+        self.weight = weight
+        self.average = average
+
     def remaining_time(self, target, weight, average):
         """
         Function to get an estimate of the time remaining before cattle reach
         their target weight of 750kg
         Returns number of days estimated to reach target weight
         """
-        time_to_target = round(((TARGET_WEIGHT - total_dec_weight) / average_weight_gain))
+        time_to_target = round(((TARGET_WEIGHT - DEC_TOTAL) / daily_gain))
+        print(time_to_target)
         return time_to_target
-    target_days = remaining_time(TARGET_WEIGHT, total_dec_weight, average_weight_gain)
 
     def feed_to_target(self, days, ratio):
         """
         Function to calculate the amount of food required to get the average
         animal to target weight
         """
-        feed_required = target_days * conversion_ratio
+        feed_required = time_left_report * fcr
         return feed_required
-    feed_to_finish = feed_to_target(target_days, conversion_ratio)
+    #feed_to_finish = feed_to_target(target_days, conversion_ratio)
 
     def cost_to_target(self, feed, cost):
         """
@@ -210,8 +217,11 @@ class Report:
         """
         target_cost = (feed_to_finish * FEED_COST) / 1000
         return target_cost
-    finishing_cost = cost_to_target(feed_to_finish, FEED_COST)
+    #finishing_cost = cost_to_target(feed_to_finish, FEED_COST)
 
+
+report = Report(TARGET_WEIGHT, DEC_TOTAL, daily_gain)
+time_left_report = report.remaining_time(TARGET_WEIGHT, DEC_TOTAL, daily_gain)
 
 class Main():
     """
