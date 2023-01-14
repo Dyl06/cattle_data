@@ -15,7 +15,9 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Cattle_data')
 
-DEC_INDEX = 11
+DEC_INDEX = -1
+NOV_INDEX = -2
+DEC_DAYS = 31
 
 
 class Inputs:
@@ -50,7 +52,8 @@ class CattleWeights:
 
         print(month_total)
         return month_total
-    total_weight = total_monthly_weight(cows, DEC_INDEX)
+    total_dec_weight = total_monthly_weight(cows, DEC_INDEX)
+    total_nov_weight = total_monthly_weight(cows, NOV_INDEX)
 
     def average_weight(self, total_weight):
         """
@@ -63,15 +66,18 @@ class CattleWeights:
         average_weight = total_weight / len(cows)
         round_average_weight = round(average_weight, 2)
         print(round_average_weight)
+        return round_average_weight
+    avg_weight = average_weight(cows, total_dec_weight)
 
-    def average_daily_gain(self):
+    def average_daily_gain(self, total_dec_weight, total_nov_weight):
         """
         Function to calculate the average daily weight gain of the average
         cow in the herd.
         """
-        # adg = average_weight/(number of days in each month) need to round()
-        # answer down to 1 decimal place
-        # adg = [jan: 1,2, feb: 1,4, ... etc]
+        first_adg = (total_dec_weight - total_nov_weight) / DEC_DAYS
+        adg = round(first_adg, 2)
+        return adg
+    average_daily_gain(total_dec_weight, total_nov_weight)
 
 
 class CattleFeed:

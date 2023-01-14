@@ -3,7 +3,8 @@ cows = {
     "cow2": [11, 22, 33, 44, 55, 66],
     "cow3": [15, 25, 35, 45, 55, 65]
 }
-JAN_INDEX = 0
+DEC_INDEX = -1
+NOV_INDEX = -2
 
 def total_monthly_weight(data, month_index):
     """
@@ -18,8 +19,8 @@ def total_monthly_weight(data, month_index):
     return month_total
 
 
-total_weight = total_monthly_weight(cows, JAN_INDEX)
-
+total_dec_weight = total_monthly_weight(cows, DEC_INDEX)
+total_nov_weight = total_monthly_weight(cows, NOV_INDEX)
 
 def average_weight(self, total_weight):
     """
@@ -33,14 +34,25 @@ def average_weight(self, total_weight):
     average_weight = total_weight / len(cows)
     round_average_weight = round(average_weight, 2)
     print(round_average_weight)
+    return round_average_weight
 
 
-average_weight(cows, total_weight)
+avg_weight = average_weight(cows, total_dec_weight)
+DEC_DAYS = 31
 
 
+def average_daily_gain(self, total_nov_weight):
+    """
+    Function to calculate the average daily weight gain of the average
+    cow in the herd.
+    """
+    adg = (total_dec_weight - total_nov_weight) / DEC_DAYS
+    print(adg)
+    return adg
 
 
-total_monthly_weight(cows, JAN_INDEX)
+average_daily_gain(total_dec_weight, total_nov_weight)
+
 
 feed = {
     'jan': 10,
