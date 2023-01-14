@@ -18,7 +18,7 @@ SHEET = GSPREAD_CLIENT.open('Cattle_data')
 DEC_INDEX = -1
 NOV_INDEX = -2
 DEC_DAYS = 31
-
+TARGET_WEIGHT = 750
 
 class Inputs:
     """
@@ -78,7 +78,7 @@ class CattleWeights:
         first_adg = (total_dec_weight - total_nov_weight) / DEC_DAYS
         adg = round(first_adg, 2)
         return adg
-    average_daily_gain(gained_weight)
+    average_weight_gain = average_daily_gain(gained_weight)
 
 
 class CattleFeed:
@@ -161,6 +161,8 @@ class Report:
         their target weight of 750kg
         Returns number of days estimated to reach target weight
         """
+        time_to_target = round(((TARGET_WEIGHT - total_dec_weight) / average_weight_gain))
+        return time_to_target
 
     def feed_to_target(self):
         """
