@@ -74,8 +74,7 @@ class CattleWeights:
         print(month_total)
         return month_total
 
-
-    def average_weight(self, total_weight):
+    def average_weight(self):
         """
         Calculate the average weight of an individual animal for each month
         of the year.
@@ -83,30 +82,28 @@ class CattleWeights:
         total_monthly_weight function and then
         dividing it by the number of cattle in this case 20.
         """
-        average_weight = total_weight / len(cows)
+        average_weight = DEC_TOTAL / len(cows)
         round_average_weight = round(average_weight, 2)
         print(round_average_weight)
         return round_average_weight
-    #avg_weight = average_weight(cows, total_dec_weight)
 
-    def average_daily_gain(self, gained_weight):
+    def average_daily_gain(self):
         """
         Function to calculate the average daily weight gain of the average
         cow in the herd.
         """
         first_adg = (DEC_TOTAL - NOV_TOTAL) / DEC_DAYS
         adg = round(first_adg, 2)
+        print(adg)
         return adg
-   # average_weight_gain = average_daily_gain(gained_weight)
 
 
 dec_weight = CattleWeights(cows, DEC_INDEX)
 DEC_TOTAL = dec_weight.total_monthly_weight(cows, DEC_INDEX)
 nov_weight = CattleWeights(cows, NOV_INDEX)
 NOV_TOTAL = nov_weight.total_monthly_weight(cows, NOV_INDEX)
-#total_dec_weight = cattle_weight.total_monthly_weight(cows, DEC_INDEX)
-#total_nov_weight = cattle_weight.total_monthly_weight(cows, NOV_INDEX)
-gained_weight = (DEC_TOTAL - NOV_TOTAL)
+avg_weight = dec_weight.average_weight()
+daily_gain = dec_weight.average_daily_gain()
 
 
 class CattleFeed:
