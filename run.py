@@ -54,6 +54,7 @@ class CattleWeights:
         return month_total
     total_dec_weight = total_monthly_weight(cows, DEC_INDEX)
     total_nov_weight = total_monthly_weight(cows, NOV_INDEX)
+    gained_weight = (total_dec_weight - total_nov_weight)
 
     def average_weight(self, total_weight):
         """
@@ -69,7 +70,7 @@ class CattleWeights:
         return round_average_weight
     avg_weight = average_weight(cows, total_dec_weight)
 
-    def average_daily_gain(self, total_dec_weight, total_nov_weight):
+    def average_daily_gain(self, gained_weight):
         """
         Function to calculate the average daily weight gain of the average
         cow in the herd.
@@ -77,7 +78,7 @@ class CattleWeights:
         first_adg = (total_dec_weight - total_nov_weight) / DEC_DAYS
         adg = round(first_adg, 2)
         return adg
-    average_daily_gain(total_dec_weight, total_nov_weight)
+    average_daily_gain(gained_weight)
 
 
 class CattleFeed:
@@ -134,15 +135,20 @@ class CattleFeed:
         Function to calculate the average consumption per month
         """
         # avg_consumption = consumed / len(feed column)
-
-    def feed_conversion_ratio(self):
+    
+    dec_intake = feed['december']#feed intake for month of DEC from feed dict
+    def feed_conversion_ratio(self, weight, intake):
         """
         Function to calculate how many kg's of food the average animal ate to
-        put on 1kg of body weight.
+        put on 1kg of body weight. The function is divided by 1000 to convert
+        the feed from tons to killograms.
+        Function works by calculating the difference in weight gain from one
+        month to the next (Nov-Dec) and then dividing that by the amount of
+        food eaten over the same period.
         """
-        # fcr = yearly consumed / ((-1index avg december weight)
-        #  -(0 index avg january weight))
-
+        fcr = round((((gained_weight) / (dec_intake)) / 1000), 4)
+        return fcr
+    def feed_conversion_ratio(gained_weight, dec_intake)
 
 class Report:
     """

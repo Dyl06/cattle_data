@@ -62,6 +62,11 @@ feed = {
 
 }
 
+april_intake = feed['april']
+print(april_intake)
+
+fcr = round((((total_dec_weight - total_nov_weight) / (april_intake)) / 1000), 4)
+print(fcr)
 def total_used_feed():
         """
         Function to calculate the total amount of feed used over the year.
