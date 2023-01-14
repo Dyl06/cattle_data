@@ -148,14 +148,14 @@ class CattleFeed:
         """
         fcr = round((((gained_weight) / (dec_intake)) / 1000), 4)
         return fcr
-    def feed_conversion_ratio(gained_weight, dec_intake)
+    conversion_ratio = feed_conversion_ratio(gained_weight, dec_intake)
 
 class Report:
     """
     Class to compile the data from the CattleWeights and CattleFeed classes
     and create the usable report to be added to the report SHEET
     """
-    def remaining_time(self, cows):
+    def remaining_time(self, target, weight, average):
         """
         Function to get an estimate of the time remaining before cattle reach
         their target weight of 750kg
@@ -163,14 +163,17 @@ class Report:
         """
         time_to_target = round(((TARGET_WEIGHT - total_dec_weight) / average_weight_gain))
         return time_to_target
+    target_days = remaining_time(TARGET_WEIGHT, total_dec_weight, average_weight_gain)
 
-    def feed_to_target(self):
+    def feed_to_target(self, days, ratio):
         """
         Function to calculate the amount of food required to get the average
         animal to target weight
         """
-        # feed_required = target * Avg FCR
-
+        feed_required = target_days * conversion_ratio
+        return feed_required
+    feed_to_target(target_days, conversion_ratio)
+    
     def cost_to_target(self):
         """
         Function to calculate the cost of getting the animals from their
