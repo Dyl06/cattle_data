@@ -6,6 +6,7 @@ cows = {
 DEC_INDEX = -1
 NOV_INDEX = -2
 
+
 def total_monthly_weight(data, month_index):
     """
     Function to calculate the total weight of all the cattle combined for
@@ -21,6 +22,7 @@ def total_monthly_weight(data, month_index):
 
 total_dec_weight = total_monthly_weight(cows, DEC_INDEX)
 total_nov_weight = total_monthly_weight(cows, NOV_INDEX)
+
 
 def average_weight(self, total_weight):
     """
@@ -51,30 +53,22 @@ def average_daily_gain(self, total_nov_weight):
     return adg
 
 
-average_daily_gain(total_dec_weight, total_nov_weight)
-
-
 feed = {
     'jan': 10,
     'feb': 11,
-    'march': 12,
-    'april': 12
+    'nov': 10,
+    'dec': 12
 
 }
 
-april_intake = feed['april']
-print(april_intake)
 
-fcr = round((((total_dec_weight - total_nov_weight) / (april_intake)) / 1000), 4)
-fcr = round((((gained_weight) / (dec_intake)) / 1000), 4)
-print(fcr)
 def total_used_feed():
-        """
-        Function to calculate the total amount of feed used over the year.
-        """
-        #sum(len(feed row))
-        consumption = sum(feed.values())
-        return consumption
+    """
+    Function to calculate the total amount of feed used over the year.
+    """
+    consumption = sum(feed.values())
+    print(consumption)
+    return consumption
 
 
 fed = total_used_feed()

@@ -16,16 +16,16 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Cattle_data')
 
 cows = {
-    "cow1": [10, 20, 30, 40, 50, 60],
-    "cow2": [11, 22, 33, 44, 55, 66],
-    "cow3": [15, 25, 35, 45, 55, 65]
+    "cow1": [10, 20, 30, 40, 150, 260],
+    "cow2": [11, 22, 33, 44, 155, 266],
+    "cow3": [15, 25, 35, 45, 155, 265]
 }
 
 feed = {
-    'jan': 10,
-    'feb': 11,
-    'nov': 10,
-    'dec': 12
+    'jan': 1,
+    'feb': 1.1,
+    'nov': 1,
+    'dec': 1.2
 
 }
 
@@ -55,7 +55,7 @@ class CattleWeights:
     """
     Class to group together all the functions for evaluating the cattle weight
     data from the weight SHEET
-    """ 
+    """
     def __init__(self, data, month_index):
         self.data = data
         self.month_index = month_index
@@ -66,7 +66,7 @@ class CattleWeights:
         Function to calculate the total weight of all the cattle combined for
         each month
         """
-        
+
         month_total = 0
         for cow, weights in cows.items():
             month_total += weights[month_index]
@@ -111,57 +111,25 @@ class CattleFeed:
     Class to group together all the functions for evaluating the feed data
     from the feed SHEET
     """
-    # create one function that calculates total and then pass used and wasted
-    #  into it.
-    def total_used_feed(self):
+    def __init__(self, data):
+        self.feed = feed
+
+    def total_used_feed(self, data):
         """
         Function to calculate the total amount of feed used over the year.
         """
-        # sum(len(feed row))
+        consumption = sum(feed.values())
+        print(consumption)
+        return consumption
 
-    def total_wasted_feed(self):
-        """
-        Function to calculate how much food has been wasted over the year.
-        """
-        # sum(len(waste row))
-
-    def total_consumed(self):
-        """
-        Function for the amount of food actually consumed by the cattle over
-        the year.
-        """
-        # consumed = total_used_feed() - total_wasted_feed()
-
-    # possibly use the same on e function that calculates totals and just
-    # pass it the feed cost.
     def feed_cost(self):
         """
         Function for the total cost of all the feed for the year. Assuming an
         average cost of feed of £150 per ton.
         """
-        # cost = total_used_feed() * 150
-
-    def cost_of_waste(self):
-        """
-        Function for the total cost of all the wasted food for the year.
-        Assuming the same cost of £150 per ton
-        """
-        # waste = total_wasted_feed() * 150
-
-    def individual_consumption(self):
-        """
-        Function to calculate the average consumption of each individual
-        animal.
-        """
-        # ind_consumption = consumed / len(row1)
-
-    def average_consumption(self):
-        """
-        Function to calculate the average consumption per month
-        """
-        # avg_consumption = consumed / len(feed column)
-    
-    dec_intake = feed['dec']
+        cost = total_consumed * FEED_COST
+        print(cost)
+        return cost
 
     def feed_conversion_ratio(self, dec_intake):
         """
@@ -172,9 +140,16 @@ class CattleFeed:
         month to the next (Nov-Dec) and then dividing that by the amount of
         food eaten over the same period.
         """
-        fcr = round((((DEC_TOTAL - NOV_TOTAL) / (dec_intake)) / 1000), 4)
+        fcr = round((DEC_INTAKE * 1000) / (DEC_TOTAL - NOV_TOTAL), 2)
         print(fcr)
         return fcr
+
+
+DEC_INTAKE = feed['dec']
+consumption = CattleFeed(feed)
+total_consumed = consumption.total_used_feed(feed)
+feed_cost = consumption.feed_cost()
+conversion_ratio = consumption.feed_conversion_ratio(DEC_INTAKE)
 
 
 class Report:
@@ -193,20 +168,20 @@ class Report:
         their target weight of 750kg
         Returns number of days estimated to reach target weight
         """
-        time_to_target = round(((TARGET_WEIGHT - DEC_TOTAL) / daily_gain))
+        time_to_target = round(((TARGET_WEIGHT - avg_weight) / daily_gain))
         print(time_to_target)
         return time_to_target
 
-    def feed_to_target(self, days, ratio):
+    def feed_to_target(self):
         """
         Function to calculate the amount of food required to get the average
         animal to target weight
         """
-        feed_required = time_left_report * fcr
+        feed_required = round((TARGET_WEIGHT - avg_weight) * conversion_ratio)
+        print(feed_required)
         return feed_required
-    #feed_to_finish = feed_to_target(target_days, conversion_ratio)
 
-    def cost_to_target(self, feed, cost):
+    def cost_to_target(self):
         """
         Function to calculate the cost of getting the animals from their
         current weights to the target weights of 750kg
@@ -215,13 +190,16 @@ class Report:
         Price is divided by 1000 to get the price in kg as the feed required
         is in kg's.
         """
-        target_cost = (feed_to_finish * FEED_COST) / 1000
+        target_cost = round(((target_feed * FEED_COST) / 1000), 2)
+        print(target_cost)
         return target_cost
-    #finishing_cost = cost_to_target(feed_to_finish, FEED_COST)
 
 
 report = Report(TARGET_WEIGHT, DEC_TOTAL, daily_gain)
 time_left_report = report.remaining_time(TARGET_WEIGHT, DEC_TOTAL, daily_gain)
+target_feed = report.feed_to_target()
+cost_target = report.cost_to_target()
+
 
 class Main():
     """
