@@ -55,6 +55,8 @@ class UserInputs:
     """
     Class to take user inputs and process them.
     """
+    username = input("Username:\n")
+    password = input("password:\n")
 
     def __init__(self):
         """
@@ -68,11 +70,7 @@ class UserInputs:
         and proccessed by the application.
         Data will be integer values.
         """
-        while True:
-            print("Please enter your last 3 cattle weights.")
-            print("Weights should be whole numbers.")
-            print("Example: 168, 204, 320\n")
-
+        
     def login(self):
         """
         Function to input and process the username and password.
@@ -85,6 +83,34 @@ class UserInputs:
         Function to take the users unique cow id's and last three
         months weights. Data is added to an empty dictionary.
         """
+        while True:
+            print("Pleas enter cattle weights for the last three months.")
+            print("Weights should be three numbers separated by commas")
+            print("Example: 260, 300, 360")
+
+            weights_data = input("Enter cattle weights here: \n")
+            
+            weight_input = weights_data.split(",")
+            validate_weights_data(weight_input)
+
+            if validate_weights_data(weight_input):
+                print("Weights are valid")
+                break
+
+        return weight_input
+
+    def validate_weights_data(values):
+
+        try:
+            [int(value) for value in values]
+            if len(values) != 3:
+                raise ValueError(
+                    f"Exactly 3 values required, you provided {len(values)}"
+                )
+        except ValueError as e:
+            print(f"Invalid data: {e}, please try again.\n")
+            return False
+        return True
 
     def user_feed_input(self):
         """
@@ -146,7 +172,7 @@ class CattleFeed:
     Class to group together all the functions for evaluating the feed data
     from the feed SHEET
     """
-    def __init__(self, data):
+    def __init__(self, feed):
         self.feed = feed
 
     def total_used_feed(self):
@@ -186,7 +212,7 @@ class Report:
     and create the usable report to be added to the report SHEET
     """
     print("Please see your Cattle Data Report.\n")
-    
+
     def __init__(self, target, weight, average):
         self.target = target
         self.weight = weight
@@ -239,10 +265,12 @@ class Main():
     consumption = CattleFeed(feed)
     total_consumed = consumption.total_used_feed()
     feed_cost = consumption.feed_cost(total_consumed)
-    conversion_ratio = consumption.feed_conversion_ratio(DEC_INTAKE, dec_total, nov_total)
+    conversion_ratio = consumption.feed_conversion_ratio(DEC_INTAKE, dec_total,
+      nov_total)
 
     report = Report(TARGET_WEIGHT, dec_total, daily_gain)
-    time_left_report = report.remaining_time(TARGET_WEIGHT, avg_weight, daily_gain)
+    time_left_report = report.remaining_time(TARGET_WEIGHT, avg_weight,
+      daily_gain)
     target_feed = report.feed_to_target(avg_weight, conversion_ratio)
     cost_target = report.cost_to_target(target_feed)
 
