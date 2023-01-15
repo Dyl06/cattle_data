@@ -117,6 +117,35 @@ class UserInputs:
         Function to take users feed usage for the last three months.
         Data added to an empty dictionary.
         """
+        while True:
+            print("Pleas enter feed consumption for the last three months.")
+            print("Feed should be in tons")
+            print("Weights should be three numbers separated by commas")
+            print("Example: 260, 300, 360")
+
+            feed_data = input("Enter feed consumption here: \n")
+            
+            feed_input = feed_data.split(",")
+            validate_feed_data(feed_input)
+
+            if validate_feed_data(feed_input):
+                print("Feed inputs are valid")
+                break
+
+        return feed_input
+
+    def validate_feed_data(values):
+
+        try:
+            [int(value) for value in values]
+            if len(values) != 3:
+                raise ValueError(
+                    f"Exactly 3 values required, you provided {len(values)}"
+                )
+        except ValueError as e:
+            print(f"Invalid data: {e}, please try again.\n")
+            return False
+        return True
 
 
 class CattleWeights:
