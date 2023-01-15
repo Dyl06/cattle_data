@@ -50,7 +50,18 @@ class SheetInputs:
         data = cattle_data.get_all_values()
         return data[0]
 
-    def get_user_inputs():
+
+class UserInputs:
+    """
+    Class to take user inputs and process them.
+    """
+
+    def __init__(self):
+        """
+        Function to hold the class arguments.
+        """
+
+    def get_user_inputs(self):
         """
         Get Cattle weights and feed inputs from the user.
         Data will be inputted into a dictionary to be run
@@ -62,26 +73,20 @@ class SheetInputs:
             print("Weights should be whole numbers.")
             print("Example: 168, 204, 320\n")
 
-
-class UserInputs:
-    """
-    Class to take user inputs and process them.
-    """
-
-    def login():
+    def login(self):
         """
         Function to input and process the username and password.
         New users get a signup and returning users data is loaded from
         external sheets
         """
 
-    def user_cow_input():
+    def user_cow_input(self):
         """
         Function to take the users unique cow id's and last three
         months weights. Data is added to an empty dictionary.
         """
 
-    def user_feed_input():
+    def user_feed_input(self):
         """
         Function to take users feed usage for the last three months.
         Data added to an empty dictionary.
@@ -112,7 +117,7 @@ class CattleWeights:
         print(month_total)
         return month_total
 
-    def average_weight(self):
+    def average_weight(self, dec_total):
         """
         Calculate the average weight of an individual animal for each month
         of the year.
@@ -120,28 +125,20 @@ class CattleWeights:
         total_monthly_weight function and then
         dividing it by the number of cattle in this case 20.
         """
-        average_weight = DEC_TOTAL / len(cows)
+        average_weight = dec_total / len(cows)
         round_average_weight = round(average_weight, 2)
         print(round_average_weight)
         return round_average_weight
 
-    def average_daily_gain(self):
+    def average_daily_gain(self, dec_total, nov_total):
         """
         Function to calculate the average daily weight gain of the average
         cow in the herd.
         """
-        first_adg = (DEC_TOTAL - NOV_TOTAL) / DEC_DAYS
+        first_adg = (dec_total - nov_total) / DEC_DAYS
         adg = round(first_adg, 2)
         print(adg)
         return adg
-
-
-dec_weight = CattleWeights(cows, DEC_INDEX)
-DEC_TOTAL = dec_weight.total_monthly_weight(cows, DEC_INDEX)
-nov_weight = CattleWeights(cows, NOV_INDEX)
-NOV_TOTAL = nov_weight.total_monthly_weight(cows, NOV_INDEX)
-avg_weight = dec_weight.average_weight()
-daily_gain = dec_weight.average_daily_gain()
 
 
 class CattleFeed:
@@ -152,7 +149,7 @@ class CattleFeed:
     def __init__(self, data):
         self.feed = feed
 
-    def total_used_feed(self, data):
+    def total_used_feed(self):
         """
         Function to calculate the total amount of feed used over the year.
         """
@@ -160,7 +157,7 @@ class CattleFeed:
         print(consumption)
         return consumption
 
-    def feed_cost(self):
+    def feed_cost(self, total_consumed):
         """
         Function for the total cost of all the feed for the year. Assuming an
         average cost of feed of £150 per ton.
@@ -169,7 +166,7 @@ class CattleFeed:
         print(cost)
         return cost
 
-    def feed_conversion_ratio(self, dec_intake):
+    def feed_conversion_ratio(self, DEC_INTAKE, dec_total, nov_total):
         """
         Function to calculate how many kg's of food the average animal ate to
         put on 1kg of body weight. The function is divided by 1000 to convert
@@ -178,16 +175,9 @@ class CattleFeed:
         month to the next (Nov-Dec) and then dividing that by the amount of
         food eaten over the same period.
         """
-        fcr = round((DEC_INTAKE * 1000) / (DEC_TOTAL - NOV_TOTAL), 2)
+        fcr = round((DEC_INTAKE * 1000) / (dec_total - nov_total), 2)
         print(fcr)
         return fcr
-
-
-
-consumption = CattleFeed(feed)
-total_consumed = consumption.total_used_feed(feed)
-feed_cost = consumption.feed_cost()
-conversion_ratio = consumption.feed_conversion_ratio(DEC_INTAKE)
 
 
 class Report:
@@ -202,7 +192,7 @@ class Report:
         self.weight = weight
         self.average = average
 
-    def remaining_time(self, target, weight, average):
+    def remaining_time(self, TARGET_WEIGHT, avg_weight, daily_gain):
         """
         Function to get an estimate of the time remaining before cattle reach
         their target weight of 750kg
@@ -212,7 +202,7 @@ class Report:
         print(f"Days left to reach Target Weight: {time_to_target} days\n")
         return time_to_target
 
-    def feed_to_target(self):
+    def feed_to_target(self, avg_weight, conversion_ratio):
         """
         Function to calculate the amount of food required to get the average
         animal to target weight
@@ -221,7 +211,7 @@ class Report:
         print(f"Feed Required to reach target weight: {feed_required} kgs\n")
         return feed_required
 
-    def cost_to_target(self):
+    def cost_to_target(self, target_feed):
         """
         Function to calculate the cost of getting the animals from their
         current weights to the target weights of 750kg
@@ -235,13 +225,26 @@ class Report:
         return target_cost
 
 
-report = Report(TARGET_WEIGHT, DEC_TOTAL, daily_gain)
-time_left_report = report.remaining_time(TARGET_WEIGHT, DEC_TOTAL, daily_gain)
-target_feed = report.feed_to_target()
-cost_target = report.cost_to_target()
-
-
 class Main():
     """
     Class to execute the entire aplication.
     """
+    dec_weight = CattleWeights(cows, DEC_INDEX)
+    dec_total = dec_weight.total_monthly_weight(cows, DEC_INDEX)
+    nov_weight = CattleWeights(cows, NOV_INDEX)
+    nov_total = nov_weight.total_monthly_weight(cows, NOV_INDEX)
+    avg_weight = dec_weight.average_weight(dec_total)
+    daily_gain = dec_weight.average_daily_gain(dec_total, nov_total)
+
+    consumption = CattleFeed(feed)
+    total_consumed = consumption.total_used_feed()
+    feed_cost = consumption.feed_cost(total_consumed)
+    conversion_ratio = consumption.feed_conversion_ratio(DEC_INTAKE, dec_total, nov_total)
+
+    report = Report(TARGET_WEIGHT, dec_total, daily_gain)
+    time_left_report = report.remaining_time(TARGET_WEIGHT, avg_weight, daily_gain)
+    target_feed = report.feed_to_target(avg_weight, conversion_ratio)
+    cost_target = report.cost_to_target(target_feed)
+
+
+Main()
