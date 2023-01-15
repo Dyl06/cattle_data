@@ -34,6 +34,7 @@ NOV_INDEX = -2
 DEC_DAYS = 31
 TARGET_WEIGHT = 750
 FEED_COST = 150
+DEC_INTAKE = feed['dec']
 
 
 class Inputs:
@@ -48,6 +49,18 @@ class Inputs:
         cattle_data = SHEET.worksheet('Weight')
         data = cattle_data.get_all_values()
         return data[0]
+
+    def get_user_inputs():
+        """
+        Get Cattle weights and feed inputs from the user.
+        Data will be inputted into a dictionary to be run
+        and proccessed by the application.
+        Data will be integer values.
+        """
+        while True:
+            print("Please enter your last 3 cattle weights.")
+            print("Weights should be whole numbers.")
+            print("Example: 168, 204, 320\n")
 
 
 class CattleWeights:
@@ -145,7 +158,7 @@ class CattleFeed:
         return fcr
 
 
-DEC_INTAKE = feed['dec']
+
 consumption = CattleFeed(feed)
 total_consumed = consumption.total_used_feed(feed)
 feed_cost = consumption.feed_cost()
@@ -157,6 +170,8 @@ class Report:
     Class to compile the data from the CattleWeights and CattleFeed classes
     and create the usable report to be added to the report SHEET
     """
+    print("Please see your Cattle Data Report.\n")
+    
     def __init__(self, target, weight, average):
         self.target = target
         self.weight = weight
@@ -169,7 +184,7 @@ class Report:
         Returns number of days estimated to reach target weight
         """
         time_to_target = round(((TARGET_WEIGHT - avg_weight) / daily_gain))
-        print(time_to_target)
+        print(f"Days left to reach Target Weight: {time_to_target} days\n")
         return time_to_target
 
     def feed_to_target(self):
@@ -178,7 +193,7 @@ class Report:
         animal to target weight
         """
         feed_required = round((TARGET_WEIGHT - avg_weight) * conversion_ratio)
-        print(feed_required)
+        print(f"Feed Required to reach target weight: {feed_required} kgs\n")
         return feed_required
 
     def cost_to_target(self):
@@ -191,7 +206,7 @@ class Report:
         is in kg's.
         """
         target_cost = round(((target_feed * FEED_COST) / 1000), 2)
-        print(target_cost)
+        print(f"Cost for each animal to reach target weight: £{target_cost}\n")
         return target_cost
 
 
