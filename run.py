@@ -37,7 +37,7 @@ FEED_COST = 150
 DEC_INTAKE = feed['dec']
 
 
-class Inputs:
+class SheetInputs:
     """
     Class to call google sheets and process sheets.
     """
@@ -61,6 +61,31 @@ class Inputs:
             print("Please enter your last 3 cattle weights.")
             print("Weights should be whole numbers.")
             print("Example: 168, 204, 320\n")
+
+
+class UserInputs:
+    """
+    Class to take user inputs and process them.
+    """
+
+    def login():
+        """
+        Function to input and process the username and password.
+        New users get a signup and returning users data is loaded from
+        external sheets
+        """
+
+    def user_cow_input():
+        """
+        Function to take the users unique cow id's and last three
+        months weights. Data is added to an empty dictionary.
+        """
+
+    def user_feed_input():
+        """
+        Function to take users feed usage for the last three months.
+        Data added to an empty dictionary.
+        """
 
 
 class CattleWeights:
