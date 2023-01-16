@@ -70,6 +70,7 @@ class UserInputs:
                 extra_cows[cow_id] = weight_input_int
             else:
                 print("Invalid data. Please try again.\n")
+                continue
         
             print("Would you like to enter another cow?")
             print("1) Yes")
@@ -78,18 +79,26 @@ class UserInputs:
             if (answer == "1" or answer.lower() == "yes"):
                 continue
             else:
-                print("Please enter one month and one feed value at a time.")
-                print("Feed should be in tons")
-                print("Enter data for 3 consecutive months.")
+                while True:
+                    print("Please enter 3 months feed data.")
+                    print("Feed should be in tons")
+                    print("Feed should be 3 numbers separated by commas.")
+                    print("Example 10, 20, 30")
 
-                for i in range(3):
-                    month = input("Enter the month:\n")
                     food = input("Enter consumption in tons:\n")
 
-                    new_feed[month] = int(food)
+                    food_intake = food.split(",")
 
-                break
+                    if self.validate_weights_data(food_intake):
+                        print("Feed values are valid")
+                        food_intake_int = [int(x) for x in food_intake]
+                        new_feed = food_intake_int
+                    else:
+                        print("Invalid data. Please try again.")
+                        continue
 
+                    break
+            break
         return (extra_cows, new_feed)
 
     def validate_weights_data(self, values):
@@ -169,7 +178,7 @@ class CattleFeed:
         """
         Function to calculate the total amount of feed used over the year.
         """
-        consumption = sum(self.feed.values())
+        consumption = sum(self.feed)
         print(consumption)
         return consumption
 
