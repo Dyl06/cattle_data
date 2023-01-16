@@ -15,26 +15,11 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Cattle_data')
 
-cows = {
-    "cow1": [10, 20, 30, 40, 150, 260],
-    "cow2": [11, 22, 33, 44, 155, 266],
-    "cow3": [15, 25, 35, 45, 155, 265]
-}
-
-feed = {
-    'jan': 1,
-    'feb': 1.1,
-    'nov': 1,
-    'dec': 1.2
-
-}
-
 DEC_INDEX = -1
 NOV_INDEX = -2
 DEC_DAYS = 31
 TARGET_WEIGHT = 750
 FEED_COST = 150
-DEC_INTAKE = feed['dec']
 
 
 class SheetInputs:
@@ -42,6 +27,9 @@ class SheetInputs:
     Class to call google sheets and process sheets.
     """
 
+    # TODO: Split into two functions - load_feed_data, load_weight_data
+    # TODO: run these funxtions first in main and print out cow data
+    # TODO: first question do you want to add a cow or create report
     def load_data(self):
         """
         Load data from Google Docs
@@ -55,112 +43,70 @@ class UserInputs:
     """
     Class to take user inputs and process them.
     """
-    username = input("Username:\n")
-    password = input("password:\n")
-
-    def __init__(self):
-        """
-        Function to hold the class arguments.
-        """
-
-    def get_user_inputs(self):
-        """
-        Get Cattle weights and feed inputs from the user.
-        Data will be inputted into a dictionary to be run
-        and proccessed by the application.
-        Data will be integer values.
-        """
-        
-    def login(self):
-        """
-        Function to input and process the username and password.
-        New users get a signup and returning users data is loaded from
-        external sheets
-        """
 
     def user_cow_input(self):
         """
         Function to take the users unique cow id's and last three
         months weights. Data is added to an empty dictionary.
         """
+        extra_cows = {}
+        new_feed = {}
         while True:
-            print("Pleas enter cattle weights for the last three months.")
+            print("Please enter unique cow id")
+            print("Please enter weights for the last three months.")
+            print("Weights should correspond to unique cow id.")
             print("Weights should be three numbers separated by commas")
             print("Example: 260, 300, 360")
 
-            weights_data = input("Enter cattle weights here: \n")
-            
-            weight_input = weights_data.split(",")
-            validate_weights_data(weight_input)
+            cow_id = input("Enter cows unique id here:\n")
 
-            if validate_weights_data(weight_input):
+            cow_weights = input("Enter cattle weights here:\n")
+                
+            weight_input = cow_weights.split(",")
+                
+            if self.validate_weights_data(weight_input):
                 print("Weights are valid")
+                weight_input_int = [int(x) for x in weight_input]
+                extra_cows[cow_id] = weight_input_int
+            else:
+                print("Invalid data. Please try again.\n")
+        
+            print("Would you like to enter another cow?")
+            print("1) Yes")
+            print("2) No")
+            answer = input()
+            if (answer == "1" or answer.lower() == "yes"):
+                continue
+            else:
+                print("Please enter one month and one feed value at a time.")
+                print("Feed should be in tons")
+                print("Enter data for 3 consecutive months.")
+
+                for i in range(3):
+                    month = input("Enter the month:\n")
+                    food = input("Enter consumption in tons:\n")
+
+                    new_feed[month] = int(food)
+
                 break
 
-        return weight_input
+        return (extra_cows, new_feed)
 
-    def validate_weights_data(values):
+    def validate_weights_data(self, values):
+            """
+            Function to validate user inputs and return error if inputs provided
+            aren't correct.
+            """
 
-        try:
-            [int(value) for value in values]
-            if len(values) != 3:
-                raise ValueError(
-                    f"Exactly 3 values required, you provided {len(values)}"
-                )
-        except ValueError as e:
-            print(f"Invalid data: {e}, please try again.\n")
-            return False
-        return True
-
-    def user_feed_input(self):
-        """
-        Function to take users feed usage for the last three months.
-        Data added to an empty dictionary.
-        """
-        while True:
-            print("Please enter the month followed by feed consumption for that month for three consecutive months")
-            print("Feed should be in tons")
-            print("Weights should be three numbers separated by commas")
-            print("Example: 260, 300, 360")
-
-            feed = {}
-
-            for i in range(3):
-                month = input("Enter the month:")
-                food = input("Enter consumption in tons:")
-
-                feed[month] = food
-
-
-            print(feed)
-
-            feed_data = input("Enter feed consumption here: \n")
-            
-            feed_input = feed_data.split(",")
-            validate_feed_data(feed_input)
-
-            if validate_feed_data(feed_input):
-                print("Feed inputs are valid")
-                break
-
-        return feed_input
-
-    def validate_feed_data(values):
-        """
-        Function to validate users feed data inputs. 
-        Code has been adapted from the 
-        Code Institute Love Sandwiches practice project.
-        """
-        try:
-            [int(value) for value in values]
-            if len(values) != 3:
-                raise ValueError(
-                    f"Exactly 3 values required, you provided {len(values)}"
-                )
-        except ValueError as e:
-            print(f"Invalid data: {e}, please try again.\n")
-            return False
-        return True
+            try:
+                [int(value) for value in values]
+                if len(values) != 3:
+                    raise ValueError(
+                        f"Exactly 3 values required, you provided {len(values)}"
+                    )
+            except ValueError as e:
+                return False
+            return True
 
 
 class CattleWeights:
@@ -181,13 +127,13 @@ class CattleWeights:
         """
 
         month_total = 0
-        for cow, weights in cows.items():
+        for cow, weights in data.items():
             month_total += weights[month_index]
 
         print(month_total)
         return month_total
 
-    def average_weight(self, dec_total):
+    def average_weight(self, dec_total, data):
         """
         Calculate the average weight of an individual animal for each month
         of the year.
@@ -195,7 +141,7 @@ class CattleWeights:
         total_monthly_weight function and then
         dividing it by the number of cattle in this case 20.
         """
-        average_weight = dec_total / len(cows)
+        average_weight = dec_total / len(data)
         round_average_weight = round(average_weight, 2)
         print(round_average_weight)
         return round_average_weight
@@ -216,14 +162,14 @@ class CattleFeed:
     Class to group together all the functions for evaluating the feed data
     from the feed SHEET
     """
-    def __init__(self, feed):
-        self.feed = feed
+    def __init__(self, updated_feed):
+        self.feed = updated_feed
 
     def total_used_feed(self):
         """
         Function to calculate the total amount of feed used over the year.
         """
-        consumption = sum(feed.values())
+        consumption = sum(self.feed.values())
         print(consumption)
         return consumption
 
@@ -299,24 +245,50 @@ class Main():
     """
     Class to execute the entire aplication.
     """
-    dec_weight = CattleWeights(cows, DEC_INDEX)
-    dec_total = dec_weight.total_monthly_weight(cows, DEC_INDEX)
-    nov_weight = CattleWeights(cows, NOV_INDEX)
-    nov_total = nov_weight.total_monthly_weight(cows, NOV_INDEX)
-    avg_weight = dec_weight.average_weight(dec_total)
-    daily_gain = dec_weight.average_daily_gain(dec_total, nov_total)
+    def __init__(self):
 
-    consumption = CattleFeed(feed)
-    total_consumed = consumption.total_used_feed()
-    feed_cost = consumption.feed_cost(total_consumed)
-    conversion_ratio = consumption.feed_conversion_ratio(DEC_INTAKE, dec_total,
-      nov_total)
+        cows = {
+            "cow1": [10, 20, 30, 40, 150, 260],
+            "cow2": [11, 22, 33, 44, 155, 266],
+            "cow3": [15, 25, 35, 45, 155, 265]
+        }
 
-    report = Report(TARGET_WEIGHT, dec_total, daily_gain)
-    time_left_report = report.remaining_time(TARGET_WEIGHT, avg_weight,
-      daily_gain)
-    target_feed = report.feed_to_target(avg_weight, conversion_ratio)
-    cost_target = report.cost_to_target(target_feed)
+        feed = {
+            'jan': 1,
+            'feb': 1.1,
+            'nov': 1,
+            'dec': 1.2
+        }
+        dec_intake = feed['dec']
+
+        cows = {}
+        feed = {}
+        
+        user_inputs = UserInputs()
+        (extra_cows, new_feed) = user_inputs.user_cow_input()
+        cows.update(extra_cows)
+        feed = new_feed
+        #print(extra_cows)
+        #print(new_feed)
+
+        dec_weight = CattleWeights(cows, DEC_INDEX)
+        dec_total = dec_weight.total_monthly_weight(cows, DEC_INDEX)
+        nov_weight = CattleWeights(cows, NOV_INDEX)
+        nov_total = nov_weight.total_monthly_weight(cows, NOV_INDEX)
+        avg_weight = dec_weight.average_weight(dec_total, cows)
+        daily_gain = dec_weight.average_daily_gain(dec_total, nov_total)
+
+        consumption = CattleFeed(feed)
+        total_consumed = consumption.total_used_feed()
+        feed_cost = consumption.feed_cost(total_consumed)
+        conversion_ratio = consumption.feed_conversion_ratio(dec_intake, dec_total,
+        nov_total)
+
+        report = Report(TARGET_WEIGHT, dec_total, daily_gain)
+        time_left_report = report.remaining_time(TARGET_WEIGHT, avg_weight,
+        daily_gain)
+        target_feed = report.feed_to_target(avg_weight, conversion_ratio)
+        cost_target = report.cost_to_target(target_feed)
 
 
-Main()
+main = Main()
