@@ -118,10 +118,21 @@ class UserInputs:
         Data added to an empty dictionary.
         """
         while True:
-            print("Pleas enter feed consumption for the last three months.")
+            print("Please enter the month followed by feed consumption for that month for three consecutive months")
             print("Feed should be in tons")
             print("Weights should be three numbers separated by commas")
             print("Example: 260, 300, 360")
+
+            feed = {}
+
+            for i in range(3):
+                month = input("Enter the month:")
+                food = input("Enter consumption in tons:")
+
+                feed[month] = food
+
+
+            print(feed)
 
             feed_data = input("Enter feed consumption here: \n")
             
@@ -135,7 +146,11 @@ class UserInputs:
         return feed_input
 
     def validate_feed_data(values):
-
+        """
+        Function to validate users feed data inputs. 
+        Code has been adapted from the 
+        Code Institute Love Sandwiches practice project.
+        """
         try:
             [int(value) for value in values]
             if len(values) != 3:
