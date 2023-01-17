@@ -29,16 +29,17 @@ class SheetInputs:
     Class to call google sheets and process sheets.
     """
 
-    # TODO: Split into two functions - load_feed_data, load_weight_data
-    # TODO: run these funxtions first in main and print out cow data
-    # TODO: first question do you want to add a cow or create report
     def load_data(self):
         """
         Load data from Google Docs
         """
         cattle_data = SHEET.worksheet('Weight')
-        data = cattle_data.get_all_values()
-        return data[0]
+        data = cattle_data.get_all_records()
+        new_cows = {}
+        for cow in data:
+            new_cows[cow['cow number']] = [cow['oct'], cow['nov'], cow['dec']]
+        return new_cows
+
 
 class UserInputs:
     """
@@ -113,8 +114,8 @@ class UserInputs:
                 raise ValueError(
                     f"Exactly 3 values required, you provided {len(values)}"
                 )
-        except ValueError as e:
-            print(f"Invalid data: {e}, please try again.\n")
+        except ValueError as error:
+            print(f"Invalid data: {error}, please try again.\n")
             return False
         return True
 
@@ -125,7 +126,11 @@ class UserInputs:
         """
 
         worksheet_to_update = SHEET.worksheet(worksheet)
-        worksheet_to_update.append_row(data)
+        for cow_id, weights in data.items():
+            row = []
+            row.append(cow_id)
+            row = row + weights
+            worksheet_to_update.append_row(row)
 
 
 class CattleWeights:
@@ -146,7 +151,7 @@ class CattleWeights:
         """
 
         month_total = 0
-        for cow, weights in data.items():
+        for _, weights in data.items():
             month_total += weights[month_index]
 
         print(month_total)
@@ -158,7 +163,7 @@ class CattleWeights:
         of the year.
         Using the total weight for each month of the year from the
         total_monthly_weight function and then
-        dividing it by the number of cattle in this case 20.
+        dividing it by the number of cattle.
         """
         average_weight = dec_total / len(data)
         round_average_weight = round(average_weight, 2)
@@ -211,13 +216,13 @@ class Report:
         self.weight = weight
         self.average = average
 
-    def remaining_time(self, TARGET_WEIGHT, avg_weight, daily_gain):
+    def remaining_time(self, target_weight, avg_weight, daily_gain):
         """
         Function to get an estimate of the time remaining before cattle reach
         their target weight of 750kg
         Returns number of days estimated to reach target weight
         """
-        time_to_target = round(((TARGET_WEIGHT - avg_weight) / daily_gain))
+        time_to_target = round(((target_weight - avg_weight) / daily_gain))
         print(f"Days left to reach Target Weight: {time_to_target} days\n")
         return time_to_target
 
@@ -248,19 +253,28 @@ class Main():
     """
     Class to execute the entire aplication.
     """
+
+    def print_cows(self, cows):
+        """
+        Pretty print cows
+        """
+        for cow_id, weights in cows.items():
+            print(f"Cow ID {cow_id} weights are: {weights}")
+
     def __init__(self):
 
-        cows = {}
+        inp = SheetInputs()
+        cows = inp.load_data()
+        self.print_cows(cows)
+
         feed = []
 
         user_inputs = UserInputs()
         (extra_cows, new_feed) = user_inputs.user_cow_input()
         cows.update(extra_cows)
         feed = new_feed
-        print(extra_cows)
-        print(new_feed)
         dec_intake = feed[-1]
-        sheet_update = user_inputs.update_worksheet(weight_input_int, "Weight")
+        user_inputs.update_worksheet(extra_cows, "Weight")
 
         dec_weight = CattleWeights(cows, DEC_INDEX)
         dec_total = dec_weight.total_monthly_weight(cows, DEC_INDEX)
@@ -270,14 +284,18 @@ class Main():
         daily_gain = dec_weight.average_daily_gain(dec_total, nov_total)
 
         consumption = CattleFeed(feed)
-        conversion_ratio = consumption.feed_conversion_ratio(dec_intake,
-            dec_total, nov_total)
+        conversion_ratio = consumption.feed_conversion_ratio(
+            dec_intake,
+            dec_total,
+            nov_total)
 
         report = Report(TARGET_WEIGHT, dec_total, daily_gain)
-        time_left_report = report.remaining_time(TARGET_WEIGHT, avg_weight,
+        report.remaining_time(
+            TARGET_WEIGHT,
+            avg_weight,
             daily_gain)
         target_feed = report.feed_to_target(avg_weight, conversion_ratio)
-        cost_target = report.cost_to_target(target_feed)
+        report.cost_to_target(target_feed)
 
 
 main = Main()

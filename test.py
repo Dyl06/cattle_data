@@ -20,10 +20,18 @@ def load_data():
     cattle_data = SHEET.worksheet('Weight')
     data = cattle_data.get_all_records()
     print(data)
-    return data
+    return data[0]
 
 load_data()
 
+
+
+
+
+
+
+
+"""
 cattle_data = SHEET.worksheet('Weight')
 """
 cows = {}
@@ -35,13 +43,14 @@ for ind in range(2, 5):
 
 
 def update_worksheet(data, worksheet):
-    """
+    """ """
     Recieves a list of integers to be inserted into a worksheet
     Update the relevant worksheet with the data provided
-    """
+    """ """
     
     worksheet_to_update = SHEET.worksheet(worksheet)
     worksheet_to_update.append_row(data)
     print(f"{worksheet} worksheet updated successfully.\n")
 
 update_worksheet(Weight_input_int, "Weight")
+"""
