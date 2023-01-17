@@ -22,6 +22,11 @@ NOV_INDEX = -2
 DEC_DAYS = 31
 TARGET_WEIGHT = 750
 FEED_COST = 150
+# Google sheets headings converted to global variables for better readability.
+HEADER_COW_NUMBER = "cow number"
+HEADER_WEIGHT_ONE = "w1"
+HEADER_WEIGHT_TWO = "w2"
+HEADER_WEIGHT_THREE = "w3"
 
 
 class SheetInputs:
@@ -37,7 +42,10 @@ class SheetInputs:
         data = cattle_data.get_all_records()
         new_cows = {}
         for cow in data:
-            new_cows[cow['cow number']] = [cow['oct'], cow['nov'], cow['dec']]
+            new_cows[cow[HEADER_COW_NUMBER]] = [
+                cow[HEADER_WEIGHT_ONE],
+                cow[HEADER_WEIGHT_TWO],
+                cow[HEADER_WEIGHT_THREE]]
         return new_cows
 
 
@@ -121,7 +129,9 @@ class UserInputs:
 
     def update_worksheet(self, data, worksheet):
         """
-        Recieves a list of integers to be inserted into a worksheet
+        Recieves a dictionary from user inputs the values are then iterated
+        over and converted to a list of integers to be inserted
+        into a worksheet.
         Update the relevant worksheet with the data provided
         """
 
@@ -154,7 +164,6 @@ class CattleWeights:
         for _, weights in data.items():
             month_total += weights[month_index]
 
-        print(month_total)
         return month_total
 
     def average_weight(self, dec_total, data):
@@ -167,7 +176,6 @@ class CattleWeights:
         """
         average_weight = dec_total / len(data)
         round_average_weight = round(average_weight, 2)
-        print(round_average_weight)
         return round_average_weight
 
     def average_daily_gain(self, dec_total, nov_total):
@@ -177,7 +185,6 @@ class CattleWeights:
         """
         first_adg = (dec_total - nov_total) / DEC_DAYS
         adg = round(first_adg, 2)
-        print(adg)
         return adg
 
 
@@ -199,7 +206,6 @@ class CattleFeed:
         food eaten over the same period.
         """
         fcr = round((dec_intake * 1000) / (dec_total - nov_total), 2)
-        print(fcr)
         return fcr
 
 
@@ -256,18 +262,19 @@ class Main():
 
     def print_cows(self, cows):
         """
-        Pretty print cows
+        Prints the list of cows and their weights from google sheets in a
+        more readable and user friendly way.
+        Used learning material from code institute python essentials to
+        replicate this print layout.
         """
         for cow_id, weights in cows.items():
             print(f"Cow ID {cow_id} weights are: {weights}")
 
     def __init__(self):
 
-        inp = SheetInputs()
-        cows = inp.load_data()
+        user_inp = SheetInputs()
+        cows = user_inp.load_data()
         self.print_cows(cows)
-
-        feed = []
 
         user_inputs = UserInputs()
         (extra_cows, new_feed) = user_inputs.user_cow_input()
