@@ -1,5 +1,7 @@
 """
-Code comment here
+Application for a user to enter cattle weight data and feed consumption data
+to be processed and have a report returned with usefull insights into
+the performance of his herd and costs related.
 """
 import gspread
 from google.oauth2.service_account import Credentials
@@ -38,7 +40,6 @@ class SheetInputs:
         data = cattle_data.get_all_values()
         return data[0]
 
-
 class UserInputs:
     """
     Class to take user inputs and process them.
@@ -53,18 +54,17 @@ class UserInputs:
         new_feed = []
         while True:
             print("Please enter unique cow id")
+            cow_id = input("Enter cows unique id here:\n")
+
             print("Please enter weights for the last three months.")
             print("Weights should correspond to unique cow id.")
             print("Weights should be three numbers separated by commas")
             print("Example: 260, 300, 360")
-
-            cow_id = input("Enter cows unique id here:\n")
-
             cow_weights = input("Enter cattle weights here:\n")
 
             weight_input = cow_weights.split(",")
 
-            if self.validate_weights_data(weight_input):
+            if self.validate_input_data(weight_input):
                 print("Weights are valid")
                 weight_input_int = [int(x) for x in weight_input]
                 extra_cows[cow_id] = weight_input_int
@@ -89,7 +89,7 @@ class UserInputs:
 
                     food_intake = food.split(",")
 
-                    if self.validate_weights_data(food_intake):
+                    if self.validate_input_data(food_intake):
                         print("Feed values are valid")
                         food_intake_int = [int(x) for x in food_intake]
                         new_feed = food_intake_int
@@ -101,7 +101,7 @@ class UserInputs:
             break
         return (extra_cows, new_feed)
 
-    def validate_weights_data(self, values):
+    def validate_input_data(self, values):
         """
         Function to validate user inputs and return error if inputs provided
         aren't correct.
@@ -117,6 +117,15 @@ class UserInputs:
             print(f"Invalid data: {e}, please try again.\n")
             return False
         return True
+
+    def update_worksheet(self, data, worksheet):
+        """
+        Recieves a list of integers to be inserted into a worksheet
+        Update the relevant worksheet with the data provided
+        """
+
+        worksheet_to_update = SHEET.worksheet(worksheet)
+        worksheet_to_update.append_row(data)
 
 
 class CattleWeights:
@@ -194,7 +203,8 @@ class Report:
     Class to compile the data from the CattleWeights and CattleFeed classes
     and create the usable report to be added to the report SHEET
     """
-    print("Please see your Cattle Data Report.\n")
+    print("Welcome to Cattle Data")
+    print("Please follow all instructions below to input your data.")
 
     def __init__(self, target, weight, average):
         self.target = target
@@ -239,7 +249,7 @@ class Main():
     Class to execute the entire aplication.
     """
     def __init__(self):
-        
+
         cows = {}
         feed = []
 
@@ -249,7 +259,8 @@ class Main():
         feed = new_feed
         print(extra_cows)
         print(new_feed)
-        dec_intake = feed[2]
+        dec_intake = feed[-1]
+        sheet_update = user_inputs.update_worksheet(weight_input_int, "Weight")
 
         dec_weight = CattleWeights(cows, DEC_INDEX)
         dec_total = dec_weight.total_monthly_weight(cows, DEC_INDEX)
